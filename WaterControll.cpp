@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include <Wire.h>
 #include <inttypes.h>
-
+  
 int parse_code(String* in){
   return atoi(in[0].c_str());
 }
@@ -14,16 +14,25 @@ WaterControll::WaterControll(){
     Wire.begin();
 }
 
+void WaterControll::set_addr(int id, int addr){
+    WaterControll::sendCommand(id, String("I2c," + String(addr)));
+    Serial.println("[SENSOR] " + WaterControll::sensors_name[id] + ": I2C address changed! Sensor disconnected!");
+}
+
+void WaterControll::set_finishHandler(FuncHandler f){
+    WaterControll::finishHandler = f;
+}
+
 void WaterControll::readAll_w(){
     Serial.println("[WARNING] This operation take many time! From 1 second to 8");
     for(int i = 0; i < WaterControll::sensors_count; i++){
         WaterControll::read_data_w(i);
     }
 }
-float* WaterControll::readAll_nw(){
+void WaterControll::readAll_nw(){
     if(WaterControll::now_sens == WaterControll::sensors_count){
       WaterControll::finished = true;
-      return WaterControll::sensors_data;
+      WaterControll::finishHandler(WaterControll::sensors_data);
     }
     else{
       float res = WaterControll::read_data_nw(WaterControll::now_sens);
@@ -67,7 +76,16 @@ void WaterControll::set_debug(bool state){
 
 void WaterControll::Add(int type, String name, int addr){
     WaterControll::sensors_type[WaterControll::sensors_count] = type;
-    WaterControll::sensors_addr[WaterControll::sensors_count] = (addr == -1 ? WaterControll::std_addr[type] : addr);
+    WaterControll::sensors_addr[WaterControll::sensors_count] = addr;
+    WaterControll::sensors_name[WaterControll::sensors_count++] = name;
+    
+    if(WaterControll::debug){
+      Serial.println("[SENSORS] New sensor: " + name + "; type: " + WaterControll::types[type] + "; ID: " + String(WaterControll::sensors_count-1));
+    }
+}
+void WaterControll::Add(int type, String name){
+    WaterControll::sensors_type[WaterControll::sensors_count] = type;
+    WaterControll::sensors_addr[WaterControll::sensors_count] = WaterControll::std_addr[type];
     WaterControll::sensors_name[WaterControll::sensors_count++] = name;
     
     if(WaterControll::debug){

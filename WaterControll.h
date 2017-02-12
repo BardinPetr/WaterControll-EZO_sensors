@@ -1,17 +1,3 @@
-/*
-enum TYPE{
-    PH,    // 0 -pH Circuit
-    OPR,   // 1 -OPR Circuit
-    DO,    // 2 -Dissolved Oxygen Circuit
-    COND,  // 3-Conductivity Circuit
-    RTD    // 4-RTD Temperature Circuit
-};
-enum INTERFACE{
-    SERIAL,
-    I2C
-};
-*/
-
 #ifndef _WATERCONTROLL_H_
 #define _WATERCONTROLL_H_
 
@@ -22,23 +8,27 @@ enum INTERFACE{
 
 class WaterControll{
 public:
+    typedef void (*FuncHandler)(float*);
+
     WaterControll();
 
     void Add(int, String, int);
+    void Add(int, String);
 
     void request_data(int);
     float read_data_w(int);
     float read_data_nw(int);
-    void setFinishFunc();
 
     void sendCommand(int, String);
     String* requestFrom(int id);
     void calibrate(int, int, float, bool);
 
     void readAll_w();
-    float* readAll_nw();
+    void readAll_nw();
 
     void set_debug(bool);
+    void set_finishHandler(FuncHandler);
+    void set_addr(int, int);
 
     bool reading = false;
     long int read_start = 0;
@@ -57,6 +47,17 @@ public:
 
     String types[6] = {"PH", "OPR", "Dissloved Oxygen", "Conductivity", "Temperature", "Flow"};
     bool debug = true;
-};
 
+    FuncHandler finishHandler;
+
+    enum {
+    PH,    // 0 -pH Circuit
+    OPR,   // 1 -OPR Circuit
+    DO,    // 2 -Dissolved Oxygen Circuit
+    COND,  // 3 -Conductivity Circuit
+    RTD,   // 4 -RTD Temperature Circuit
+    FLOW   // 5 -Flow sensor
+    };
+};
+ 
 #endif
