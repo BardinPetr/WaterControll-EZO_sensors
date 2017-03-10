@@ -9,19 +9,25 @@ void setup() {
   sens.Add(sens.COND, "Conductivity", false);//Add the Conductivity sensor on I2C
   sens.Add(sens.RTD, "Temperature", false);  //Add the Temperature sensor on I2C
   sens.Add(sens.FLOW, "Flow", true);         //Add the Flow sensor on Serial
-  
-  sens.set_finishHandler(finish);
-}
-
-void finish(float* in){
-  Serial.println("\n\n***************\nData from sensors recieved!");
-  for (int i = 0; i < sens.sensors_count; i++){
-    Serial.println(sens.sensors_name[i] + ":\t\t\t\t" + String(in[i]));
-  }
-  Serial.println("***************\n");
 }
 
 void loop() {
-  sens.readAll_nw();
+  //To perform calibration type in serial monitor: <sensor id>:c.<caltype>=<cal value>
+  if(Serial.available()){
+    char res[10];
+    Serial.readBytesUntil(13, res, 10);
+
+    int ch = String(strtok(res, ":")).toInt();
+    String cmd = String(strtok(NULL, ":"));
+    
+    if(cmd.startsWith("c")){
+      strtok(cmd.c_str(), ".");
+      String cr = String(strtok(NULL, "."));
+      String type = String(strtok(cr.c_str(), "="));
+      float val = String(strtok(NULL, "=")).toFloat();
+
+      sens.calibrate(ch, type, val, true);
+    }
+  }
 }
 
