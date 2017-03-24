@@ -131,7 +131,7 @@ void WaterControll::readAll_nw(){
     else{
       float res = WaterControll::read_data_nw(WaterControll::now_sens);
       if(res != -255){
-          Serial.print("res: " + String(res));
+          //Serial.print("res: " + String(res));
           WaterControll::sensors_data[now_sens] = res;
           WaterControll::now_sens++;
       }

@@ -3,7 +3,7 @@
  
 #include <inttypes.h>
 #include <avr/io.h>
-#include <arduino.h>
+//#include "arduino.h"
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <AltSoftSerial.h>
@@ -51,7 +51,7 @@ public:
     float sensors_data[8];
     bool sensors_iface[8];
 
-    int std_addr[6] = {99, 98, 97, 100, 0, 102};//0x63 0x62 0x61 0x64 NO_I2C 0x66
+    int std_addr[6] = {99, 98, 97, 100, 102, 0};
 
     String types[6] = {"PH", "OPR", "Dissloved Oxygen", "Conductivity", "Temperature", "Flow"};
     bool debug = true;
