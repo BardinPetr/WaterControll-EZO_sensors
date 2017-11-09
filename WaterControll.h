@@ -7,6 +7,7 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <AltSoftSerial.h>
+#include "SerialProtocol.h"
 
 class WaterControll{
 public:
@@ -14,7 +15,7 @@ public:
 
     WaterControll(); //Begin i2c
     WaterControll(SoftwareSerial &, int, int, int, bool); //Begin with software serial
-    WaterControll(HardwareSerial &, int, int, int, bool); //Begin with software serial
+    WaterControll(HardwareSerial &, int, int, int, bool); //Begin with hardware serial
 
     void Add(int, String, int);
     void Add(int, String, bool);
@@ -51,9 +52,9 @@ public:
     float sensors_data[8];
     bool sensors_iface[8];
 
-    int std_addr[6] = {99, 98, 97, 100, 102, 0};
+    int std_addr[6] = {99, 98, 97, 100, 102, 0, 103};
 
-    String types[6] = {"PH", "OPR", "Dissloved Oxygen", "Conductivity", "Temperature", "Flow"};
+    String types[6] = {"PH", "OPR", "Dissloved Oxygen", "Conductivity", "Temperature", "Flow", "Pump"};
     bool debug = true;
  
     FuncHandler finishHandler;
@@ -69,7 +70,8 @@ public:
     DO,    // 2 -Dissolved Oxygen Circuit
     COND,  // 3 -Conductivity Circuit
     RTD,   // 4 -RTD Temperature Circuit
-    FLOW   // 5 -Flow sensor
+    FLOW,  // 5 -Flow sensor
+    PUMP   // 6 -Pump
     };
 
 private:

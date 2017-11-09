@@ -264,7 +264,7 @@ float WaterControll::read_data_nw(int id){
   int sensor_bytes_received = 0;
 
   if(WaterControll::reading){
-    if((millis() - WaterControll::read_start) > 1000){
+    if((millis() - WaterControll::read_start) > 1500){
       float rec_data = WaterControll::requestFrom_f(id);
 
       WaterControll::read_start = 0;
